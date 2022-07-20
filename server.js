@@ -34,6 +34,30 @@ app.get("/lessons", (req, res) => {
   // res.render(__dirname + "/views/all-lessons.hbs", { allLessons })
 })
 
+
+// "/lessons/web"
+// "/lessons/cyber"
+// "/lessons/ux"
+
+app.get("/lessons/:bootcamp", (req, res) => {
+
+  // req.params
+  const {bootcamp} = req.params // "web", "cyber", "ux"
+  // allLessons
+  // allLessons.bootcamp ??? => filtrar solo los bootcamps que necesitamos
+  const filteredLessson = allLessons.filter((eachLesson) => {
+    return eachLesson.bootcamp === bootcamp
+  })
+  console.log(filteredLessson)
+  // crear la vista
+
+  // res.render
+  res.render(__dirname + "/views/all-lessons.hbs", {
+    allLessons: filteredLessson
+  })
+
+})
+
 app.listen(process.env.PORT, () => {
   console.log(`Example app listening on port ${process.env.PORT}`)
 })
