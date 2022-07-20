@@ -9,6 +9,10 @@ app.set('view engine', 'hbs');
 // modulos internos
 const allLessons = require("./data/somedata.js")
 
+// APIs
+const DogApi = require('doggo-api-wrapper');
+const myDog = new DogApi();
+
 app.get('/', (req, res) => {
   // res.send('Hello World!')
 
@@ -34,11 +38,6 @@ app.get("/lessons", (req, res) => {
   // res.render(__dirname + "/views/all-lessons.hbs", { allLessons })
 })
 
-
-// "/lessons/web"
-// "/lessons/cyber"
-// "/lessons/ux"
-
 app.get("/lessons/:bootcamp", (req, res) => {
 
   // req.params
@@ -55,6 +54,22 @@ app.get("/lessons/:bootcamp", (req, res) => {
   res.render(__dirname + "/views/all-lessons.hbs", {
     allLessons: filteredLessson
   })
+
+})
+
+app.get("/random-dog", (req, res) => {
+
+  // ?
+  myDog.getARandomDog()
+  .then(data => {
+    // ...
+    let {message} = data
+    res.render(__dirname + "/views/random-dog.hbs", { message })
+    // console.log(data)
+  })
+  .catch(err => console.error(err))
+  // ?
+
 
 })
 
