@@ -5,6 +5,11 @@ const app = express()
 
 // configuraciones del servidor
 app.set('view engine', 'hbs');
+app.set("views", __dirname + "/views/")
+
+// configuracion para partials
+const hbs = require('hbs');
+hbs.registerPartials(__dirname + "/views/partials")
 
 // modulos internos
 const allLessons = require("./data/somedata.js")
@@ -19,7 +24,7 @@ app.get('/', (req, res) => {
   // aqui haremos una magia para acceder a data de una BD
 
 
-  res.render(__dirname + "/views/home.hbs", {
+  res.render("home.hbs", {
     teacherName: "Jorge"
   }) // la data a pasar siempre debe ser un Objeto
 
@@ -30,7 +35,7 @@ app.get("/lessons", (req, res) => {
   // aqui yo le quiero renderizar al usuario una vista con todas las lecciones
   // ya tengo acceso a la data como allLessons
   // me enfoco en renderizar la vista
-  res.render(__dirname + "/views/all-lessons.hbs", {
+  res.render("all-lessons.hbs", {
     allLessons: allLessons
   })
 
@@ -51,7 +56,7 @@ app.get("/lessons/:bootcamp", (req, res) => {
   // crear la vista
 
   // res.render
-  res.render(__dirname + "/views/all-lessons.hbs", {
+  res.render("all-lessons.hbs", {
     allLessons: filteredLessson
   })
 
@@ -59,16 +64,51 @@ app.get("/lessons/:bootcamp", (req, res) => {
 
 app.get("/random-dog", (req, res) => {
 
-  // ?
   myDog.getARandomDog()
   .then(data => {
     // ...
     let {message} = data
-    res.render(__dirname + "/views/random-dog.hbs", { message })
+    res.render("random-dog.hbs", { message })
     // console.log(data)
   })
   .catch(err => console.error(err))
-  // ?
+
+})
+
+app.get("/breeds", (req, res) => {
+  myDog.getListOfAllBreeds()
+  .then(data => {
+
+    const {message} = data
+    // Object.keys() => crear un arra con todos los nombres de propiedades de un objeto
+    let breedsArr = Object.keys(message)
+    console.log(breedsArr)
+
+    // console.log(data)
+    res.render("list-of-breeds.hbs", {
+      breedsArr
+    })
+  })
+  .catch(err => console.error(err))
+})
+
+app.get("/dog/:breed", (req, res) => {
+
+  const {breed} = req.params
+  console.log(breed)
+
+  myDog.getAllDogsByBreed(breed)
+  .then(data => {
+    
+    const { message } = data
+    console.log(message)
+    
+    res.render("dogs-by-breed.hbs", {
+      dogs: message
+    })
+  })
+  .catch(err => console.error(err))
+
 
 
 })
